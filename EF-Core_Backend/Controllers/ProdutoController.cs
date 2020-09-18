@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using EF_Core_Backend.Domains;
 using EF_Core_Backend.Interfaces;
 using EF_Core_Backend.Repositories;
+using EF_Core_Backend.Utils;
 
 namespace EF_Core_Backend.Controllers
 {
@@ -73,10 +74,17 @@ namespace EF_Core_Backend.Controllers
 
         // POST api/produtos
         [HttpPost]
-        public IActionResult Post(Produto produto)
+        public IActionResult Post([FromForm]Produto produto)
         {
             try
             {
+                if(produto.Imagem != null)
+                {
+                    var urlImagem = Upload.Local(produto.Imagem);
+
+                    produto.UrlImagem = urlImagem;
+                }
+
                 //Adiciona um novo produto
                 _produtoRepository.Adicionar(produto);
 
